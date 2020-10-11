@@ -1,0 +1,60 @@
+
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Register new user{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="login-box">
+        <h2>Create new user</h2>
+
+      <form method="post">
+
+          <div class="user-box">
+              <input type="text"
+                     id="first_name"
+                     name="first_name" required="">
+              <label>first_name</label>
+          </div>
+
+          <div class="user-box">
+              <input type="text"
+                     id="second_name"
+                     name="second_name" required="">
+              <label>second_name</label>
+          </div>
+
+          <div class="user-box">
+              <input type="text"
+                     id="position"
+                     name="position" required="">
+              <label>position</label>
+          </div>
+
+          <div class="user-box">
+              <input type="text"
+                     name="email"
+                     id="email" required="">
+              <label>email</label>
+          </div>
+
+          <div class="user-box">
+              <input type="text"
+                     name="phone_number"
+                     id="phone_number" required="">
+              <label>phone_number</label>
+          </div>
+
+          <div class="user-box">
+              <input type="checkbox"
+                     name="is_internal"
+                     id="is_internal"
+                     value="on">
+              <label>is_internal</label>
+          </div>
+
+          <input type="submit" value="Register">
+      </form>
+    </div>
+{% endblock %}

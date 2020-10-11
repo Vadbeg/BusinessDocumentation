@@ -1,13 +1,17 @@
 from flask import (Blueprint, Flask,
-                   render_template)
+                   render_template,
+                   request, abort,
+                   redirect, url_for)
 
 from modules.database.database_interactions import create_connection, close_connection
 from modules.database.document import Document
 from modules.database.user import User
 from modules.database.task import Task
 
+from modules.api.schemas import AddNewUser
 
-blue_print = Blueprint('Business documentation', __name__)
+
+blue_print = Blueprint('documentation', __name__)
 connection, cursor = create_connection()
 
 
@@ -43,6 +47,31 @@ def show_documents():
     return render_template('pages/tables/documents.html', **context)
 
 
+@blue_print.route('/add_user', methods=("GET", "POST"))
+def add_user():
+    if request.method == 'POST':
+        add_new_user_schema = AddNewUser()
 
-if __name__ == '__main__':
-    blue_print.run(host='127.0.0.1', port='8000')
+        errors = add_new_user_schema.validate(data=request.form)
+
+        if errors:
+            abort(400, str(errors))
+
+        args = add_new_user_schema.dump(request.form)
+
+        user = User(connection=connection, cursor=cursor)
+        user.add_user(
+            first_name=args['first_name'],
+            second_name=args['second_name'],
+            is_internal=args['is_internal'],
+
+            position=args['position'],
+            email=args['email'],
+            phone_number=args['phone_number']
+        )
+
+        return redirect(url_for('documentation.home'))
+
+    return render_template('pages/inputs/add_user.html')
+
+
