@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<table class="styled-table">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Is Internal</th>
+            <th>Position</th>
+            <th>Email</th>
+            <th>Phone number</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for curr_user in all_users %}
+    <tr>
+        <td>{{ curr_user.id }}</td>
+        <td>{{ curr_user.first_name }}</td>
+        <td>{{ curr_user.second_name }}</td>
+        <td>{{ curr_user.is_internal }}</td>
+        <td>{{ curr_user.position }}</td>
+        <td>{{ curr_user.email }}</td>
+        <td>{{ curr_user.phone_number }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

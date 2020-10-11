@@ -1,8 +1,15 @@
 CREATE DATABASE IF NOT EXISTS documents;
 USE documents;
 
+DROP TABLE document_controller;
+DROP TABLE document_creator;
+DROP TABLE task;
+DROP TABLE user;
+DROP TABLE document;
+
+
 CREATE TABLE document (
-    id INTEGER NOT NULL,
+    id INTEGER NOT NULL AUTO_INCREMENT,
     document_name VARCHAR(50),
     document_type VARCHAR(25),
     date_of_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -11,8 +18,20 @@ CREATE TABLE document (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE user (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(25),
+    second_name VARCHAR(25),
+    is_internal BOOLEAN,
+    position VARCHAR(25),
+    email VARCHAR(25),
+    phone_number VARCHAR(25),
+
+    PRIMARY KEY (id)
+);
+
 CREATE TABLE task (
-    id INTEGER NOT NULL,
+    id INTEGER NOT NULL AUTO_INCREMENT,
     task_name VARCHAR(50),
 
     executor_id INTEGER,  /* Only one executor for one task */
@@ -20,18 +39,6 @@ CREATE TABLE task (
 
     FOREIGN KEY (executor_id) REFERENCES user (id),
     FOREIGN KEY (document_id) REFERENCES document (id) ON DELETE CASCADE,
-
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE user (
-    id INTEGER NOT NULL,
-    is_internal BOOLEAN,
-    position VARCHAR(25),
-    first_name VARCHAR(25),
-    second_name VARCHAR(25),
-    email VARCHAR(25),
-    phone_number VARCHAR(25),
 
     PRIMARY KEY (id)
 );

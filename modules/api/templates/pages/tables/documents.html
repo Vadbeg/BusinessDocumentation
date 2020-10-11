@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<table class="styled-table">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>document_name</th>
+            <th>document_type</th>
+            <th>date_of_creation</th>
+            <th>date_of_registration</th>
+<!--            <th>Email</th>-->
+<!--            <th>Phone number</th>-->
+        </tr>
+    </thead>
+    <tbody>
+    {% for curr_document in all_documents %}
+    <tr>
+        <td>{{ curr_document.id }}</td>
+        <td>{{ curr_document.document_name }}</td>
+        <td>{{ curr_document.document_type }}</td>
+        <td>{{ curr_document.date_of_creation }}</td>
+        <td>{{ curr_document.date_of_registration }}</td>
+<!--        <td>{{ curr_document.email }}</td>-->
+<!--        <td>{{ curr_document.phone_number }}</td>-->
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
