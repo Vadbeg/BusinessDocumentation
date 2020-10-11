@@ -67,38 +67,68 @@ VALUES (%s, %s)
         self.connection.commit()
 
     def __get_document_creators__(self, document_id):
-        get_all_document_creators_query = """
+        get_all_document_creators_id_query = """
 SELECT creator_id
 FROM document_creator
 WHERE document_id = %s
         """
         val = [document_id]
 
-        self.cursor.execute(get_all_document_creators_query, val)
+        self.cursor.execute(get_all_document_creators_id_query, val)
         all_document_creators_id = self.cursor.fetchall()
 
         # used it to flatten list of tuples
         # :url:  https://stackoverflow.com/questions/10632839/transform-list-of-tuples-into-a-flat-list-or-a-matrix
         all_document_creators_id = list(sum(all_document_creators_id, ()))
 
-        return all_document_creators_id
+        get_all_document_creators_query = """
+SELECT id, first_name, second_name
+FROM user
+WHERE user.id in (%s)
+        """
+        val = ', '.join(['%s'] * len(all_document_creators_id))
+        get_all_document_creators_query = get_all_document_creators_query.replace('%s', val)
+
+        self.cursor.execute(get_all_document_creators_query, all_document_creators_id)
+        all_document_creators = self.cursor.fetchall()
+
+        names = ['id', 'first_name', 'second_name']
+        all_document_creators = [dict(zip(names, curr_document_creator))
+                                 for curr_document_creator in all_document_creators]
+
+        return all_document_creators
 
     def __get_document_controllers__(self, document_id):
-        get_all_document_controllers_query = """
+        get_all_document_controllers_id_query = """
 SELECT controller_id
 FROM document_controller
 WHERE document_id = %s
         """
         val = [document_id]
 
-        self.cursor.execute(get_all_document_controllers_query, val)
+        self.cursor.execute(get_all_document_controllers_id_query, val)
         all_document_controllers_id = self.cursor.fetchall()
 
         # used it to flatten list of tuples
         # :url:  https://stackoverflow.com/questions/10632839/transform-list-of-tuples-into-a-flat-list-or-a-matrix
         all_document_controllers_id = list(sum(all_document_controllers_id, ()))
 
-        return all_document_controllers_id
+        get_all_document_controllers_query = """
+        SELECT id, first_name, second_name
+        FROM user
+        WHERE user.id in (%s)
+                """
+        val = ', '.join(['%s'] * len(all_document_controllers_id))
+        get_all_document_controllers_query = get_all_document_controllers_query.replace('%s', val)
+
+        self.cursor.execute(get_all_document_controllers_query, all_document_controllers_id)
+        all_document_controllers = self.cursor.fetchall()
+
+        names = ['id', 'first_name', 'second_name']
+        all_document_controllers = [dict(zip(names, curr_document_controller))
+                                 for curr_document_controller in all_document_controllers]
+
+        return all_document_controllers
 
     def get_all_documents(self):
         get_all_documents_query = """

@@ -10,8 +10,8 @@
             <th>document_type</th>
             <th>date_of_creation</th>
             <th>date_of_registration</th>
-<!--            <th>Email</th>-->
-<!--            <th>Phone number</th>-->
+            <th>creators</th>
+            <th>controllers</th>
         </tr>
     </thead>
     <tbody>
@@ -24,6 +24,19 @@
         <td>{{ curr_document.date_of_registration }}</td>
 <!--        <td>{{ curr_document.email }}</td>-->
 <!--        <td>{{ curr_document.phone_number }}</td>-->
+
+        <td>
+            {% for curr_creator in curr_document.creators %}
+            <span style="display: block">{{ curr_creator.first_name }} {{ curr_creator.second_name }}</span>
+            {% endfor %}
+        </td>
+
+        <td>
+            {% for curr_controller in curr_document.controllers %}
+            <span style="display: block">{{ curr_controller.first_name }} {{ curr_controller.second_name }}</span>
+            {% endfor %}
+        </td>
+
     </tr>
     {% endfor %}
     </tbody>
