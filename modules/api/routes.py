@@ -1,13 +1,15 @@
-from flask import Flask
+from flask import (Blueprint, Flask,
+                   render_template)
 
-app = Flask(__name__)
+
+blue_print = Blueprint('Business documentation', __name__)
 
 
-@app.route('/')
-@app.route('/home')
+@blue_print.route('/')
+@blue_print.route('/home')
 def home():
-    return 'Fuck you'
+    return render_template('pages/home.html')
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port='8000')
+    blue_print.run(host='127.0.0.1', port='8000')
