@@ -78,29 +78,29 @@ def add_user():
 @blue_print.route('/add_document', methods=("GET", "POST"))
 def add_document():
     if request.method == 'POST':
-        add_new_user_schema = AddNewUser()
-
-        errors = add_new_user_schema.validate(data=request.form)
-
-        if errors:
-            abort(400, str(errors))
-
-        args = add_new_user_schema.dump(request.form)
-
-        user = User(connection=connection, cursor=cursor)
-        user.add_user(
-            first_name=args['first_name'],
-            second_name=args['second_name'],
-            is_internal=args['is_internal'],
-
-            position=args['position'],
-            email=args['email'],
-            phone_number=args['phone_number']
-        )
+        # add_new_user_schema = AddNewUser()
+        #
+        # errors = add_new_user_schema.validate(data=request.form)
+        #
+        # if errors:
+        #     abort(400, str(errors))
+        #
+        # args = add_new_user_schema.dump(request.form)
+        #
+        # user = User(connection=connection, cursor=cursor)
+        # user.add_user(
+        #     first_name=args['first_name'],
+        #     second_name=args['second_name'],
+        #     is_internal=args['is_internal'],
+        #
+        #     position=args['position'],
+        #     email=args['email'],
+        #     phone_number=args['phone_number']
+        # )
 
         return redirect(url_for('documentation.home'))
 
-    return render_template('pages/inputs/add_user.html')
+    return render_template('pages/inputs/add_document.html')
 
 
 

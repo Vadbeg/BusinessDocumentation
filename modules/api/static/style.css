@@ -64,6 +64,10 @@
   position: relative;
 }
 
+.login-box .user-box .no-floating {
+  position: absolute;
+}
+
 .login-box .user-box input {
   width: 100%;
   padding: 10px 0;

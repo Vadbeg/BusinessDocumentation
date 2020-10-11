@@ -1,0 +1,45 @@
+
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Register new user{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="login-box">
+        <h2>Create new user</h2>
+
+      <form method="post">
+
+          <div class="user-box">
+              <input type="text"
+                     id="document_name"
+                     name="document_name" required="">
+              <label>document_name</label>
+          </div>
+
+          <div class="user-box">
+              <input type="text"
+                     id="document_type"
+                     name="document_type" required="">
+              <label>document_type</label>
+          </div>
+
+          <div class="user-box">
+              <input type="date" style="text-align: right"
+                     id="date_of_creation"
+                     name="date_of_creation" required="">
+              <label>date_of_creation</label>
+          </div>
+
+          <div class="user-box">
+              <input type="date" style="text-align: right"
+                     name="date_of_registration"
+                     id="date_of_registration" required="">
+              <label>date_of_registration</label>
+          </div>
+
+          <input type="submit" value="Register">
+      </form>
+    </div>
+{% endblock %}
