@@ -2,12 +2,12 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Register new user{% endblock %}</h1>
+  <h1>{% block title %}Create new document{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
     <div class="login-box">
-        <h2>Create new user</h2>
+        <h2>Create new document</h2>
 
       <form method="post">
 
@@ -39,7 +39,35 @@
               <label>date_of_registration</label>
           </div>
 
-          <input type="submit" value="Register">
+          <div class="user-box">
+              <select style="text-align: right"
+                      name="choose_creators"
+                      id="creators" required="" multiple>
+
+                  {% for curr_user in all_users %}
+                  <option value="{{ curr_user.id }}">{{ curr_user.id }}. {{ curr_user.first_name }} {{ curr_user.second_name }}</option>
+                  {% endfor %}
+              </select>
+              <label class="select-label">choose_creators</label>
+          </div>
+
+          <div class="user-box" style="clear: both;">
+              <select style="text-align: right"
+                      name="choose_controllers"
+                      id="controllers" required="" multiple>
+
+                  {% for curr_user in all_users %}
+                  <option value="{{ curr_user.id }}">{{ curr_user.id }}. {{ curr_user.first_name }} {{ curr_user.second_name }}</option>
+                  {% endfor %}
+              </select>
+              <label>choose_controllers</label>
+          </div>
+
+          <div class="user-box" style="clear: both;">
+              * you can add tasks on document page
+          </div>
+
+          <input type="submit" class="button" value="Register">
       </form>
     </div>
 {% endblock %}

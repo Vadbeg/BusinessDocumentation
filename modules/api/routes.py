@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import (Blueprint, Flask,
                    render_template,
                    request, abort,
@@ -8,7 +10,7 @@ from modules.database.document import Document
 from modules.database.user import User
 from modules.database.task import Task
 
-from modules.api.schemas import AddNewUser
+from modules.api.schemas import AddNewUser, AddNewDocument
 
 
 blue_print = Blueprint('documentation', __name__)
@@ -77,30 +79,50 @@ def add_user():
 
 @blue_print.route('/add_document', methods=("GET", "POST"))
 def add_document():
+    user = User(connection=connection, cursor=cursor)
+    all_users = user.get_all_users()
+
+    context = {
+        'all_users': all_users
+    }
+
     if request.method == 'POST':
-        # add_new_user_schema = AddNewUser()
-        #
-        # errors = add_new_user_schema.validate(data=request.form)
-        #
-        # if errors:
-        #     abort(400, str(errors))
-        #
-        # args = add_new_user_schema.dump(request.form)
-        #
-        # user = User(connection=connection, cursor=cursor)
-        # user.add_user(
-        #     first_name=args['first_name'],
-        #     second_name=args['second_name'],
-        #     is_internal=args['is_internal'],
-        #
-        #     position=args['position'],
-        #     email=args['email'],
-        #     phone_number=args['phone_number']
-        # )
+        creators_ids = request.form.getlist('choose_creators')  # if there is no such name, returns empty list
+        controllers_ids = request.form.getlist('choose_controllers')
 
-        return redirect(url_for('documentation.home'))
+        request_form = dict(request.form)
+        request_form.pop('choose_creators')  # there is no need in it now
+        request_form.pop('choose_controllers')
 
-    return render_template('pages/inputs/add_document.html')
+        request_form['creators_ids'] = creators_ids
+        request_form['controllers_ids'] = controllers_ids
+
+        request_form['date_of_creation'] = datetime.strptime(request_form['date_of_creation'],
+                                                             '%Y-%m-%d')
+        request_form['date_of_registration'] = datetime.strptime(request_form['date_of_registration'],
+                                                                 '%Y-%m-%d')
+
+        add_new_document_schema = AddNewDocument()
+        errors = add_new_document_schema.validate(data=request_form)
+
+        if errors:
+            abort(400, str(errors))
+
+        args = add_new_document_schema.dump(request_form)
+
+        document = Document(connection=connection, cursor=cursor)
+        document.add_document(
+            document_name=args['document_name'],
+            document_type=args['document_type'],
+            date_of_creation=args['date_of_creation'],
+            date_of_registration=args['date_of_registration'],
+            controllers_ids=args['controllers_ids'],
+            creators_ids=args['creators_ids'],
+        )
+
+        return redirect(url_for('documentation.show_documents'))
+
+    return render_template('pages/inputs/add_document.html', **context)
 
 
 
