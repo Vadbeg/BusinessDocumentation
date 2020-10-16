@@ -10,7 +10,7 @@ from modules.database.document import Document
 from modules.database.user import User
 from modules.database.task import Task
 
-from modules.api.schemas import AddNewUser, AddNewDocument
+from modules.api.schemas import AddNewUser, AddNewDocument, AddNewTask
 
 
 blue_print = Blueprint('documentation', __name__)
@@ -123,6 +123,82 @@ def add_document():
         return redirect(url_for('documentation.show_documents'))
 
     return render_template('pages/inputs/add_document.html', **context)
+
+
+@blue_print.route('/add_task', defaults={'document_idx': None}, methods=("GET", "POST"))
+@blue_print.route('/add_task/<int:document_idx>', methods=("GET", "POST"))
+def add_task(document_idx: int):
+    document = Document(connection=connection, cursor=cursor)
+
+    if document_idx:
+        all_documents = document.get_document_by_id(document_id=document_idx)
+        all_documents = [all_documents]
+    else:
+        all_documents = document.get_all_documents()
+
+    user = User(connection=connection, cursor=cursor)
+    all_users = user.get_all_users()
+
+    context = {
+        'all_documents': all_documents,
+        'all_users': all_users
+    }
+
+    if request.method == 'POST':
+        print(request.form)
+
+        add_new_task_schema = AddNewTask()
+        errors = add_new_task_schema.validate(data=request.form)
+
+        if errors:
+            abort(400, str(errors))
+
+        args = add_new_task_schema.dump(request.form)
+
+        task = Task(connection=connection, cursor=cursor)
+
+        task.add_task(
+            task_name=args['task_name'],
+            executor_id=args['executor_id'],
+            document_id=args['document_id']
+        )
+
+        if document_idx:
+            return redirect(url_for('documentation.show_one_document', idx=document_idx))
+        else:
+            return redirect(url_for('documentation.show_tasks'))
+
+    return render_template('pages/inputs/add_task.html', **context)
+
+
+@blue_print.route('/show_tasks')
+def show_tasks():
+    task = Task(connection=connection, cursor=cursor)
+
+    all_tasks = task.get_all_tasks()
+
+    context = {
+        'all_tasks': all_tasks
+    }
+
+    return render_template('pages/tables/tasks.html', **context)
+
+
+@blue_print.route('/show_one_document/<int:idx>', methods=("GET", "POST"))
+def show_one_document(idx: int):
+    document = Document(connection=connection, cursor=cursor)
+    document_description = document.get_document_by_id(document_id=idx)
+
+    task = Task(connection=connection, cursor=cursor)
+    all_document_tasks = task.get_task_by_document_id(document_id=idx)
+
+    context = {
+        'document_description': document_description,
+        'all_document_tasks': all_document_tasks
+    }
+
+    return render_template('pages/document.html', **context)
+
 
 
 

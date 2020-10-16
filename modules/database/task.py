@@ -42,3 +42,19 @@ FROM task
 
         return all_tasks
 
+    def get_task_by_document_id(self, document_id):
+        get_all_tasks_query = """
+SELECT *
+FROM task
+WHERE task.document_id = %s
+        """
+
+        val = [document_id]
+
+        self.cursor.execute(get_all_tasks_query, val)
+        all_tasks = self.cursor.fetchall()
+
+        all_tasks = [dict(zip(self.COLUMNS_TASK, curr_user)) for curr_user in all_tasks]
+
+        return all_tasks
+

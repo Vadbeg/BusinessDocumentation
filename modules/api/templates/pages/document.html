@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+  <h1>{% block title %}One document{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<div>
+    <table class="styled-table">
+        <tbody>
+            <tr>
+                <td>id</td>
+                <td>{{ document_description.id }}</td>
+            </tr>
+
+            <tr>
+                <td>document_name</td>
+                <td>{{ document_description.document_name }}</td>
+            </tr>
+
+            <tr>
+                <td>document_type</td>
+                <td>{{ document_description.document_type }}</td>
+            </tr>
+
+            <tr>
+                <td>date_of_creation</td>
+                <td>{{ document_description.date_of_creation }}</td>
+            </tr>
+
+            <tr>
+                <td>date_of_registration</td>
+                <td>{{ document_description.date_of_registration }}</td>
+            </tr>
+
+            <tr>
+                <td>creators</td>
+                <td>
+                    {% for curr_creator in document_description.creators %}
+                    <span style="display: block">{{ curr_creator.first_name }} {{ curr_creator.second_name }}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+
+            <tr>
+                <td>controllers</td>
+                <td>
+                    {% for curr_controller in document_description.controllers %}
+                    <span style="display: block">{{ curr_controller.first_name }} {{ curr_controller.second_name }}</span>
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>task_name</th>
+                <th>executor_id</th>
+                <th>document_id</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for curr_task in all_document_tasks %}
+        <tr>
+            <td>{{ curr_task.id }}</td>
+            <td>{{ curr_task.task_name }}</td>
+            <td>{{ curr_task.executor_id }}</td>
+            <td>{{ curr_task.document_id }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('documentation.add_task', document_idx=document_description.id) }}"
+       class="button-link">Add new task</a>
+    <a href="{{ url_for('documentation.home') }}" class="button-link">Go Home</a>
+
+</div>
+
+
+{% endblock %}

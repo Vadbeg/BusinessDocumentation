@@ -13,11 +13,6 @@ def create_app(test_config=None):
     else:
         app.config.update(test_config)
 
-    try:
-        os.makedirs(app.instance_path)
-    except OSError as err:
-        pass
-
     from api import routes
     app.register_blueprint(routes.blue_print)
 

@@ -147,3 +147,21 @@ FROM document
 
         return all_documents
 
+    def get_document_by_id(self, document_id: int):
+        get_all_documents_query = """
+SELECT *
+FROM document
+WHERE document.id = %s
+        """
+
+        val = [document_id]
+
+        self.cursor.execute(get_all_documents_query, val)
+        document = self.cursor.fetchall()[0]
+
+        document = dict(zip(self.COLUMNS_DOCUMENT, document))
+
+        document['controllers'] = self.__get_document_controllers__(document['id'])
+        document['creators'] = self.__get_document_creators__(document['id'])
+
+        return document

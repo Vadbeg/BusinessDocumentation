@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block header %}
+  <h1>{% block title %}All documents{% endblock %}</h1>
+{% endblock %}
+
+
 {% block content %}
 
 <table class="styled-table">
@@ -18,7 +23,11 @@
     {% for curr_document in all_documents %}
     <tr>
         <td>{{ curr_document.id }}</td>
-        <td>{{ curr_document.document_name }}</td>
+        <td>
+            <a href="{{ url_for('documentation.show_one_document', idx=curr_document.id) }}">
+                {{ curr_document.document_name }}
+            </a>
+        </td>
         <td>{{ curr_document.document_type }}</td>
         <td>{{ curr_document.date_of_creation }}</td>
         <td>{{ curr_document.date_of_registration }}</td>
@@ -39,5 +48,7 @@
     {% endfor %}
     </tbody>
 </table>
+
+<a href="{{ url_for('documentation.home') }}" class="button-link">Go Home</a>
 
 {% endblock %}

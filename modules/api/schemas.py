@@ -42,3 +42,12 @@ class AddNewDocument(Schema):
     creators_ids = fields.List(fields.Int, required=True)
 
     controllers_ids = fields.List(fields.Int, required=False)
+
+
+class AddNewTask(Schema):
+    """Schema for adding new tasks"""
+
+    task_name = fields.Str(required=True)
+
+    executor_id = fields.Int(required=True)
+    document_id = fields.Int(required=True)

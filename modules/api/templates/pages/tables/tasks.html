@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<table class="styled-table">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>task_name</th>
+            <th>executor_id</th>
+            <th>document_id</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for curr_task in all_tasks %}
+    <tr>
+        <td>{{ curr_task.id }}</td>
+        <td>{{ curr_task.task_name }}</td>
+        <td>{{ curr_task.executor_id }}</td>
+        <td>{{ curr_task.document_id }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ url_for('documentation.home') }}" class="button-link">Go Home</a>
+
+
+{% endblock %}
