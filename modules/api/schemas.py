@@ -1,3 +1,5 @@
+"""Module with marshmallow schemas for API"""
+
 from datetime import datetime
 
 from marshmallow import Schema, fields, validate

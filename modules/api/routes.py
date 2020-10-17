@@ -1,3 +1,5 @@
+"""Module with routes for Flask application"""
+
 from datetime import datetime
 
 from flask import (Blueprint, Flask,
@@ -12,19 +14,28 @@ from modules.database.task import Task
 
 from modules.api.schemas import AddNewUser, AddNewDocument, AddNewTask, UpdateTableSchema
 
+from modules.config import Config
 
 blue_print = Blueprint('documentation', __name__)
-connection, cursor = create_connection()
+connection, cursor = create_connection(host=Config.database_host,
+                                       port=Config.database_port,
+                                       user=Config.database_user,
+                                       password=Config.database_password,
+                                       database=Config.database_name)
 
 
 @blue_print.route('/')
 @blue_print.route('/home')
 def home():
+    """Home tab"""
+
     return render_template('pages/home.html')
 
 
 @blue_print.route('/users')
 def show_users():
+    """View with users table"""
+
     user = User(connection=connection, cursor=cursor)
 
     all_users = user.get_all_users()
@@ -38,6 +49,8 @@ def show_users():
 
 @blue_print.route('/documents')
 def show_documents():
+    """View with documents table"""
+
     document = Document(connection=connection, cursor=cursor)
 
     all_documents = document.get_all_documents()
@@ -51,6 +64,8 @@ def show_documents():
 
 @blue_print.route('/add_user', methods=("GET", "POST"))
 def add_user():
+    """View for adding new users (form)"""
+
     if request.method == 'POST':
         add_new_user_schema = AddNewUser()
 
@@ -79,6 +94,8 @@ def add_user():
 
 @blue_print.route('/add_document', methods=("GET", "POST"))
 def add_document():
+    """View for adding new documents (form)"""
+
     user = User(connection=connection, cursor=cursor)
     all_users = user.get_all_users()
 
@@ -128,6 +145,8 @@ def add_document():
 @blue_print.route('/add_task', defaults={'document_idx': None}, methods=("GET", "POST"))
 @blue_print.route('/add_task/<int:document_idx>', methods=("GET", "POST"))
 def add_task(document_idx: int):
+    """View for adding new tasks (form)"""
+
     document = Document(connection=connection, cursor=cursor)
 
     if document_idx:
@@ -173,6 +192,8 @@ def add_task(document_idx: int):
 
 @blue_print.route('/show_tasks')
 def show_tasks():
+    """View for showing new tasks"""
+
     task = Task(connection=connection, cursor=cursor)
 
     all_tasks = task.get_all_tasks()
@@ -186,6 +207,8 @@ def show_tasks():
 
 @blue_print.route('/show_one_document/<int:idx>', methods=("GET", "POST"))
 def show_one_document(idx: int):
+    """View for one document page"""
+
     document = Document(connection=connection, cursor=cursor)
     document_description = document.get_document_by_id(document_id=idx)
 
@@ -202,6 +225,8 @@ def show_one_document(idx: int):
 
 @blue_print.route('/update_table')
 def update_table():
+    """View for table updating (using JQuery and ajax)"""
+
     update_table_schema = UpdateTableSchema()
 
     errors = update_table_schema.validate(request.args)
@@ -229,6 +254,8 @@ def update_table():
 
 @blue_print.route('/change_document/<int:document_idx>', methods=("GET", "POST"))
 def change_document(document_idx: int):
+    """View for document changing"""
+
     document = Document(connection=connection, cursor=cursor)
 
     document_to_change = document.get_document_by_id(document_id=document_idx)

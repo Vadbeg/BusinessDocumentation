@@ -1,6 +1,6 @@
 """Module with interactions for document table"""
 
-from typing import List
+from typing import List, Dict
 
 
 class Document:
@@ -23,9 +23,20 @@ class Document:
         self.connection = connection
         self.cursor = cursor
 
-    def add_document(self, document_name, document_type,
-                     date_of_creation, date_of_registration,
+    def add_document(self, document_name: str, document_type: str,
+                     date_of_creation: str, date_of_registration: str,
                      creators_ids: List[int], controllers_ids: List[int]):
+        """
+        For adding new document to database
+
+        :param document_name: name of the document type
+        :param document_type: name of the document type
+        :param date_of_creation: date of document creation
+        :param date_of_registration: date of document registration
+        :param creators_ids: list of creators ids
+        :param controllers_ids: list of controllers ids
+        """
+
         add_document_query = """
 INSERT INTO document (document_name, document_type, date_of_creation, date_of_registration)
 VALUES (%s, %s, %s, %s)
@@ -44,9 +55,21 @@ VALUES (%s, %s, %s, %s)
         for curr_controller_id in controllers_ids:
             self.__add_document_controller__(document_id=document_id, controller_id=curr_controller_id)
 
-    def change_document(self, document_id: int, document_name, document_type,
-                        date_of_creation, date_of_registration,
+    def change_document(self, document_id: int, document_name: str, document_type: str,
+                        date_of_creation: str, date_of_registration: str,
                         creators_ids: List[int], controllers_ids: List[int]):
+        """
+        Function for changing existing document in databse
+
+        :param document_id: id of document to change
+        :param document_name: name of the document type
+        :param document_type: name of the document type
+        :param date_of_creation: date of document creation
+        :param date_of_registration: date of document registration
+        :param creators_ids: list of creators ids
+        :param controllers_ids: list of controllers ids
+        """
+
         change_document_query = """
 UPDATE document
 SET document_name = %s, document_type = %s,
@@ -69,6 +92,13 @@ WHERE document.id = %s;
             self.__add_document_controller__(document_id=document_id, controller_id=curr_controller_id)
 
     def __add_document_creator__(self, document_id, creator_id):
+        """
+        Adds document creator to document_creator table
+
+        :param document_id: id of the document
+        :param creator_id: id of the creator
+        """
+
         add_document_creator_query = """
 INSERT INTO document_creator (document_id, creator_id)
 VALUES (%s, %s)
@@ -80,6 +110,12 @@ VALUES (%s, %s)
         self.connection.commit()
 
     def __delete_all_document_creators__(self, document_id):
+        """
+        Deletes all document creators by document_id
+
+        :param document_id: id of the document
+        """
+
         delete_all_document_creators_query = """
 DELETE FROM document_creator
 WHERE document_id = %s 
@@ -91,6 +127,13 @@ WHERE document_id = %s
         self.connection.commit()
 
     def __add_document_controller__(self, document_id, controller_id):
+        """
+        Adds document controller to document_controller table
+
+        :param document_id: id of the document
+        :param controller_id: id of the controller
+        """
+
         add_document_controller_query = """
 INSERT INTO document_controller (document_id, controller_id)
 VALUES (%s, %s)
@@ -102,6 +145,12 @@ VALUES (%s, %s)
         self.connection.commit()
 
     def __delete_all_document_controllers__(self, document_id):
+        """
+        Deletes all document controllers by document_id
+
+        :param document_id: id of the document
+        """
+
         delete_all_document_controllers_query = """
 DELETE FROM document_controller
 WHERE document_id = %s
@@ -112,7 +161,14 @@ WHERE document_id = %s
         self.cursor.execute(delete_all_document_controllers_query, val)
         self.connection.commit()
 
-    def __get_document_creators__(self, document_id):
+    def __get_document_creators__(self, document_id) -> List[Dict]:
+        """
+        Gets all document creators by document_id
+
+        :param document_id: id of the document
+        :return: list of document creators (dicts with id, first_name, second_name)
+        """
+
         get_all_document_creators_id_query = """
 SELECT creator_id
 FROM document_creator
@@ -145,6 +201,13 @@ WHERE user.id in (%s)
         return all_document_creators
 
     def __get_document_controllers__(self, document_id):
+        """
+        Gets all document controllers by document_id
+
+        :param document_id: id of the document
+        :return: list of document controllers (dicts with id, first_name, second_name)
+        """
+
         get_all_document_controllers_id_query = """
 SELECT controller_id
 FROM document_controller
@@ -172,11 +235,17 @@ WHERE document_id = %s
 
         names = ['id', 'first_name', 'second_name']
         all_document_controllers = [dict(zip(names, curr_document_controller))
-                                 for curr_document_controller in all_document_controllers]
+                                    for curr_document_controller in all_document_controllers]
 
         return all_document_controllers
 
-    def get_all_documents(self):
+    def get_all_documents(self) -> List[Dict]:
+        """
+        Returns all documents from database with controllers and creators
+
+        :return: list of documents (with controllers and creators)
+        """
+
         get_all_documents_query = """
 SELECT *
 FROM document
@@ -193,7 +262,14 @@ FROM document
 
         return all_documents
 
-    def get_document_by_id(self, document_id: int):
+    def get_document_by_id(self, document_id: int) -> Dict:
+        """
+        Finds document in database by its id and returns it (with controllers and creators).
+
+        :param document_id: id of the document
+        :return: document with give id (with controllers and creators)
+        """
+
         get_all_documents_query = """
 SELECT *
 FROM document
@@ -212,7 +288,15 @@ WHERE document.id = %s
 
         return document
 
-    def get_document_by_date(self, document_n_days: int):
+    def get_document_by_date(self, document_n_days: int) -> List[Dict]:
+        """
+        Finds document in database if they were registered in last document_n_days days
+        and returns it (with controllers and creators).
+
+        :param document_n_days: number of days from dive date to the past
+        :return: document with give id (with controllers and creators)
+        """
+
         get_all_documents_query = """
 SELECT *
 FROM document

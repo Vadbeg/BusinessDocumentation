@@ -1,5 +1,7 @@
 """Module with interactions for task table"""
 
+from typing import List, Dict
+
 
 class Task:
     COLUMNS_TASK = [
@@ -18,7 +20,16 @@ class Task:
         self.connection = connection
         self.cursor = cursor
 
-    def add_task(self, task_name, executor_id, document_id):
+    def add_task(self, task_name: str, executor_id: int, document_id: int):
+        """
+        Adds task to the database
+
+        :param task_name: name of the task
+        :param executor_id: id of the executor
+        :param document_id: if of the document
+        :return:
+        """
+
         add_user_query = """
 INSERT INTO task (task_name, executor_id, document_id)
 VALUES (%s, %s, %s)
@@ -29,7 +40,13 @@ VALUES (%s, %s, %s)
         self.cursor.execute(add_user_query, val)
         self.connection.commit()
 
-    def get_all_tasks(self):
+    def get_all_tasks(self) -> List[Dict]:
+        """
+        Reads all task from database and returns it
+
+        :return: list of all tasks
+        """
+
         get_all_tasks_query = """
 SELECT *
 FROM task
@@ -42,7 +59,14 @@ FROM task
 
         return all_tasks
 
-    def get_task_by_document_id(self, document_id):
+    def get_task_by_document_id(self, document_id) -> List[Dict]:
+        """
+        Reads task from database by document id and returns it.
+
+        :param document_id: id of the document
+        :return: list of tasks with given document id
+        """
+
         get_all_tasks_query = """
 SELECT *
 FROM task

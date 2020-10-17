@@ -1,9 +1,16 @@
-import os
+"""Module for starting app"""
 
 from flask import Flask
 
 
-def create_app(test_config=None):
+def create_app(test_config=None) -> Flask:
+    """
+    Creates app
+
+    :param test_config: config for the flask app
+    :return: app function
+    """
+
     app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_mapping(SECRET_KEY='dev')
@@ -13,7 +20,7 @@ def create_app(test_config=None):
     else:
         app.config.update(test_config)
 
-    from api import routes
+    from modules.api import routes
     app.register_blueprint(routes.blue_print)
 
     app.add_url_rule('/', endpoint='index')

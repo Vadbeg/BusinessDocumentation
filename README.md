@@ -1,2 +1,2 @@
-# BusinessDocumentation
-Project for business documentation saving
+# Business Documentation
+Project for business documentation saving and editing
