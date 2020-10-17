@@ -7,7 +7,7 @@ from modules.config import Config
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description=f'Script for bot and api starting.')
+    parser = argparse.ArgumentParser(description=f'Script for business documentation app starting.')
 
     parser.add_argument('--app-host', type=str, default='localhost', help='Host for the app')
     parser.add_argument('--app-port', type=int, default=4000, help='Port for the app')
