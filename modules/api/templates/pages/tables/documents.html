@@ -11,7 +11,9 @@
     For last <input type="number" min="1" id="search_form_input"> days
 </div>
 
-{% include 'pages/documents_table.html' %}
+<div id="table-to-update">
+    {% include 'pages/tables/documents_table.html' %}
+</div>
 
 <a href="{{ url_for('documentation.home') }}" class="button-link">Go Home</a>
 

@@ -44,6 +44,30 @@ VALUES (%s, %s, %s, %s)
         for curr_controller_id in controllers_ids:
             self.__add_document_controller__(document_id=document_id, controller_id=curr_controller_id)
 
+    def change_document(self, document_id: int, document_name, document_type,
+                        date_of_creation, date_of_registration,
+                        creators_ids: List[int], controllers_ids: List[int]):
+        change_document_query = """
+UPDATE document
+SET document_name = %s, document_type = %s,
+    date_of_creation=%s, date_of_registration=%s
+WHERE document.id = %s;
+        """
+
+        val = [document_name, document_type, date_of_creation, date_of_registration, document_id]
+
+        self.cursor.execute(change_document_query, val)
+        self.connection.commit()
+
+        self.__delete_all_document_controllers__(document_id=document_id)
+        self.__delete_all_document_creators__(document_id=document_id)
+
+        for curr_creator_id in creators_ids:
+            self.__add_document_creator__(document_id=document_id, creator_id=curr_creator_id)
+
+        for curr_controller_id in controllers_ids:
+            self.__add_document_controller__(document_id=document_id, controller_id=curr_controller_id)
+
     def __add_document_creator__(self, document_id, creator_id):
         add_document_creator_query = """
 INSERT INTO document_creator (document_id, creator_id)
@@ -55,6 +79,17 @@ VALUES (%s, %s)
         self.cursor.execute(add_document_creator_query, val)
         self.connection.commit()
 
+    def __delete_all_document_creators__(self, document_id):
+        delete_all_document_creators_query = """
+DELETE FROM document_creator
+WHERE document_id = %s 
+        """
+
+        val = [document_id]
+
+        self.cursor.execute(delete_all_document_creators_query, val)
+        self.connection.commit()
+
     def __add_document_controller__(self, document_id, controller_id):
         add_document_controller_query = """
 INSERT INTO document_controller (document_id, controller_id)
@@ -64,6 +99,17 @@ VALUES (%s, %s)
         val = [document_id, controller_id]
 
         self.cursor.execute(add_document_controller_query, val)
+        self.connection.commit()
+
+    def __delete_all_document_controllers__(self, document_id):
+        delete_all_document_controllers_query = """
+DELETE FROM document_controller
+WHERE document_id = %s
+        """
+
+        val = [document_id]
+
+        self.cursor.execute(delete_all_document_controllers_query, val)
         self.connection.commit()
 
     def __get_document_creators__(self, document_id):

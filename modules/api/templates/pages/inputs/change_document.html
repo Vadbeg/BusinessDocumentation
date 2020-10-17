@@ -1,0 +1,79 @@
+
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Change document{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('documentation.home') }}" class="button-link">Go Home</a>
+
+    <div class="login-box">
+        <h2>Change document</h2>
+
+      <form method="post">
+
+          <div class="user-box">
+              <input type="text"
+                     id="document_name" value="{{ document.document_name }}"
+                     name="document_name" required="">
+              <label>document_name</label>
+          </div>
+
+          <div class="user-box">
+              <input type="text"
+                     id="document_type" value="{{ document.document_type }}"
+                     name="document_type" required="">
+              <label>document_type</label>
+          </div>
+
+          <div class="user-box">
+              <input type="date" style="text-align: right"
+                     id="date_of_creation" value="{{ document.date_of_creation }}"
+                     name="date_of_creation" required="">
+              <label>date_of_creation</label>
+          </div>
+
+          <div class="user-box">
+              <input type="date" style="text-align: right"
+                     name="date_of_registration" value="{{ document.date_of_registration }}"
+                     id="date_of_registration" required="">
+              <label>date_of_registration</label>
+          </div>
+
+          <div class="user-box">
+              <select style="text-align: right"
+                      name="choose_creators"
+                      id="creators" required="" multiple>
+
+                  {% for curr_user in all_users %}
+                  <option value="{{ curr_user.id }}" {% if curr_user.is_in_creators %} selected {% endif %}>
+                      {{ curr_user.id }}. {{ curr_user.first_name }} {{ curr_user.second_name }}
+                  </option>
+                  {% endfor %}
+              </select>
+              <label class="select-label">choose_creators</label>
+          </div>
+
+          <div class="user-box" style="clear: both;">
+              <select style="text-align: right"
+                      name="choose_controllers"
+                      id="controllers" required="" multiple>
+
+                  {% for curr_user in all_users %}
+                  <option value="{{ curr_user.id }}" {% if curr_user.is_in_controllers %} selected {% endif %}>
+                      {{ curr_user.id }}. {{ curr_user.first_name }} {{ curr_user.second_name }}
+                  </option>
+                  {% endfor %}
+              </select>
+              <label>choose_controllers</label>
+          </div>
+
+          <div class="user-box" style="clear: both;">
+              * you can add tasks on document page
+          </div>
+
+          <input type="submit" class="button" value="Register">
+      </form>
+    </div>
+{% endblock %}

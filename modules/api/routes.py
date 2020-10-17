@@ -206,21 +206,97 @@ def update_table():
 
     errors = update_table_schema.validate(request.args)
 
+    # if user inputs not number or nothing, than show him all entries
     if errors:
-        abort(400, str(errors))
-
-    args = update_table_schema.dump(request.args)
-    last_n_days = args['last_n_days']
-
-    print(last_n_days)
+        last_n_days = 0
+    else:
+        args = update_table_schema.dump(request.args)
+        last_n_days = args['last_n_days']
 
     document = Document(connection=connection, cursor=cursor)
-    documents_by_date = document.get_document_by_date(document_n_days=last_n_days)
 
-    print(documents_by_date)
+    if last_n_days == 0:
+        documents_by_date = document.get_all_documents()
+    else:
+        documents_by_date = document.get_document_by_date(document_n_days=last_n_days)
 
     context = {
         'all_documents': documents_by_date
     }
 
-    return render_template('pages/document_table.html', **context)
+    return render_template('pages/tables/documents_table.html', **context)
+
+
+@blue_print.route('/change_document/<int:document_idx>', methods=("GET", "POST"))
+def change_document(document_idx: int):
+    document = Document(connection=connection, cursor=cursor)
+
+    document_to_change = document.get_document_by_id(document_id=document_idx)
+
+    document_to_change['date_of_creation'] = datetime.strftime(document_to_change['date_of_creation'],
+                                                               '%Y-%m-%d')
+    document_to_change['date_of_registration'] = datetime.strftime(document_to_change['date_of_registration'],
+                                                                   '%Y-%m-%d')
+
+    document_controllers = [curr_controller['id'] for curr_controller in document_to_change['controllers']]
+    document_creators = [curr_controller['id'] for curr_controller in document_to_change['creators']]
+
+    user = User(connection=connection, cursor=cursor)
+    all_users = user.get_all_users()
+
+    for curr_user in all_users:
+        if curr_user['id'] in document_controllers:
+            curr_user['is_in_controllers'] = True
+        else:
+            curr_user['is_in_controllers'] = False
+
+        if curr_user['id'] in document_creators:
+            curr_user['is_in_creators'] = True
+        else:
+            curr_user['is_in_creators'] = False
+
+    context = {
+        'all_users': all_users,
+        'document': document_to_change
+    }
+
+    if request.method == 'POST':
+        creators_ids = request.form.getlist('choose_creators')  # if there is no such name, returns empty list
+        controllers_ids = request.form.getlist('choose_controllers')
+
+        request_form = dict(request.form)
+        request_form.pop('choose_creators')  # there is no need in it now
+        request_form.pop('choose_controllers')
+
+        request_form['creators_ids'] = creators_ids
+        request_form['controllers_ids'] = controllers_ids
+
+        request_form['date_of_creation'] = datetime.strptime(request_form['date_of_creation'],
+                                                             '%Y-%m-%d')
+        request_form['date_of_registration'] = datetime.strptime(request_form['date_of_registration'],
+                                                                 '%Y-%m-%d')
+
+        add_new_document_schema = AddNewDocument()
+        errors = add_new_document_schema.validate(data=request_form)
+
+        if errors:
+            abort(400, str(errors))
+
+        args = add_new_document_schema.dump(request_form)
+
+        document = Document(connection=connection, cursor=cursor)
+
+        document.change_document(
+            document_id=document_idx,
+            document_name=args['document_name'],
+            document_type=args['document_type'],
+            date_of_creation=args['date_of_creation'],
+            date_of_registration=args['date_of_registration'],
+            controllers_ids=args['controllers_ids'],
+            creators_ids=args['creators_ids'],
+        )
+
+        return redirect(url_for('documentation.show_one_document', idx=document_to_change['id']))
+
+    return render_template('pages/inputs/change_document.html', **context)
+
