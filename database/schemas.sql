@@ -1,11 +1,11 @@
 CREATE DATABASE IF NOT EXISTS documents;
 USE documents;
 
-DROP TABLE document_controller;
-DROP TABLE document_creator;
-DROP TABLE task;
-DROP TABLE user;
-DROP TABLE document;
+DROP TABLE IF EXISTS document_controller;
+DROP TABLE IF EXISTS document_creator;
+DROP TABLE IF EXISTS task;
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS document;
 
 
 CREATE TABLE document (
@@ -24,7 +24,7 @@ CREATE TABLE user (
     second_name VARCHAR(25),
     is_internal BOOLEAN,
     position VARCHAR(25),
-    email VARCHAR(25),
+    email VARCHAR(50),
     phone_number VARCHAR(25),
 
     PRIMARY KEY (id)

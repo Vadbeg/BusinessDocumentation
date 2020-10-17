@@ -8,7 +8,7 @@ from modules.database.document import Document
 
 
 def create_connection(host: str = 'localhost', port: str = '3306',
-                      user: str = 'root', password: str = 'root',
+                      user: str = 'root', password: str = 'Root_1234',
                       database: str = 'documents') -> Tuple:
     """
     Creates connection to MySQL database

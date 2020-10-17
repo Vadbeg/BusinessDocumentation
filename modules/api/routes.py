@@ -10,7 +10,7 @@ from modules.database.document import Document
 from modules.database.user import User
 from modules.database.task import Task
 
-from modules.api.schemas import AddNewUser, AddNewDocument, AddNewTask
+from modules.api.schemas import AddNewUser, AddNewDocument, AddNewTask, UpdateTableSchema
 
 
 blue_print = Blueprint('documentation', __name__)
@@ -200,5 +200,27 @@ def show_one_document(idx: int):
     return render_template('pages/document.html', **context)
 
 
+@blue_print.route('/update_table')
+def update_table():
+    update_table_schema = UpdateTableSchema()
 
+    errors = update_table_schema.validate(request.args)
 
+    if errors:
+        abort(400, str(errors))
+
+    args = update_table_schema.dump(request.args)
+    last_n_days = args['last_n_days']
+
+    print(last_n_days)
+
+    document = Document(connection=connection, cursor=cursor)
+    documents_by_date = document.get_document_by_date(document_n_days=last_n_days)
+
+    print(documents_by_date)
+
+    context = {
+        'all_documents': documents_by_date
+    }
+
+    return render_template('pages/document_table.html', **context)

@@ -7,48 +7,41 @@
 
 {% block content %}
 
-<table class="styled-table">
-    <thead>
-        <tr>
-            <th>id</th>
-            <th>document_name</th>
-            <th>document_type</th>
-            <th>date_of_creation</th>
-            <th>date_of_registration</th>
-            <th>creators</th>
-            <th>controllers</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for curr_document in all_documents %}
-    <tr>
-        <td>{{ curr_document.id }}</td>
-        <td>
-            <a href="{{ url_for('documentation.show_one_document', idx=curr_document.id) }}">
-                {{ curr_document.document_name }}
-            </a>
-        </td>
-        <td>{{ curr_document.document_type }}</td>
-        <td>{{ curr_document.date_of_creation }}</td>
-        <td>{{ curr_document.date_of_registration }}</td>
+<div class="user-box">
+    For last <input type="number" min="1" id="search_form_input"> days
+</div>
 
-        <td>
-            {% for curr_creator in curr_document.creators %}
-            <span style="display: block">{{ curr_creator.first_name }} {{ curr_creator.second_name }}</span>
-            {% endfor %}
-        </td>
-
-        <td>
-            {% for curr_controller in curr_document.controllers %}
-            <span style="display: block">{{ curr_controller.first_name }} {{ curr_controller.second_name }}</span>
-            {% endfor %}
-        </td>
-
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+{% include 'pages/documents_table.html' %}
 
 <a href="{{ url_for('documentation.home') }}" class="button-link">Go Home</a>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script>
+
+    $("#search_form_input").keyup(function(){
+        console.log('Hey there!')
+
+        var last_n_days = $(this).val();
+
+        $.ajax({
+
+            url: '{{ url_for('documentation.update_table') }}',
+            type: 'get',
+            data: {last_n_days: last_n_days},
+
+            success: function(response) {
+                $('#table-to-update').html(response)
+            },
+            error: function(error) {
+
+            }
+
+        });
+
+    });
+
+</script>
 
 {% endblock %}

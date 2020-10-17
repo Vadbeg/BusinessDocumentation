@@ -165,3 +165,23 @@ WHERE document.id = %s
         document['creators'] = self.__get_document_creators__(document['id'])
 
         return document
+
+    def get_document_by_date(self, document_n_days: int):
+        get_all_documents_query = """
+SELECT *
+FROM document
+WHERE document.date_of_registration > DATE_SUB(now(), INTERVAL %s DAY)
+        """
+
+        val = [document_n_days]
+
+        self.cursor.execute(get_all_documents_query, val)
+        all_documents = self.cursor.fetchall()
+
+        all_documents = [dict(zip(self.COLUMNS_DOCUMENT, curr_user)) for curr_user in all_documents]
+
+        for curr_document in all_documents:
+            curr_document['controllers'] = self.__get_document_controllers__(curr_document['id'])
+            curr_document['creators'] = self.__get_document_creators__(curr_document['id'])
+
+        return all_documents
