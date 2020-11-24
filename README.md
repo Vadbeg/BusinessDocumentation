@@ -84,6 +84,6 @@ Now you can go to `http://localhost:4000/` and start using app.
 ## Authors
 
 * **Vadim Titko** aka *Vadbeg* - 
-[LinkedIn](https://www.linkedin.com/in/vadim-titko-89ab16149) | 
+[LinkedIn](https://www.linkedin.com/in/vadtitko/) | 
 [GitHub](https://github.com/Vadbeg/PythonHomework/commits?author=Vadbeg)
  
